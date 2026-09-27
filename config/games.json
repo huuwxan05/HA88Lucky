@@ -1,0 +1,119 @@
+[
+  {
+    "code": "tai-xiu-3d",
+    "name": "Tài Xỉu 3D",
+    "enabled": true,
+    "difficulty": "Normal",
+    "min_bet": 0,
+    "max_bet": 0,
+    "round_seconds": 30
+  },
+  {
+    "code": "sic-bo-3d",
+    "name": "Sic Bo 3D",
+    "enabled": true,
+    "difficulty": "Normal",
+    "min_bet": 0,
+    "max_bet": 0,
+    "round_seconds": 30
+  },
+  {
+    "code": "rong-ho-3d",
+    "name": "Rồng Hổ 3D",
+    "enabled": true,
+    "difficulty": "Normal",
+    "min_bet": 0,
+    "max_bet": 0,
+    "round_seconds": 30
+  },
+  {
+    "code": "bau-cua-3d",
+    "name": "Bầu Cua 3D",
+    "enabled": true,
+    "difficulty": "Normal",
+    "min_bet": 0,
+    "max_bet": 0,
+    "round_seconds": 30
+  },
+  {
+    "code": "blackjack-3d",
+    "name": "Blackjack 3D",
+    "enabled": true,
+    "difficulty": "Normal",
+    "min_bet": 0,
+    "max_bet": 0,
+    "round_seconds": 30
+  },
+  {
+    "code": "xoc-dia-3d",
+    "name": "Xóc Đĩa 3D",
+    "enabled": true,
+    "difficulty": "Normal",
+    "min_bet": 0,
+    "max_bet": 0,
+    "round_seconds": 30
+  },
+  {
+    "code": "baccarat-3d",
+    "name": "Baccarat 3D",
+    "enabled": true,
+    "difficulty": "Normal",
+    "min_bet": 0,
+    "max_bet": 0,
+    "round_seconds": 30
+  },
+  {
+    "code": "quyet-chien-3d",
+    "name": "Quyết Chiến 3D",
+    "enabled": true,
+    "difficulty": "Normal",
+    "min_bet": 0,
+    "max_bet": 0,
+    "round_seconds": 30
+  },
+  {
+    "code": "tien-len-3d",
+    "name": "Tiến Lên 3D",
+    "enabled": true,
+    "difficulty": "Normal",
+    "min_bet": 0,
+    "max_bet": 0,
+    "round_seconds": 30
+  },
+  {
+    "code": "phom-3d",
+    "name": "Phỏm 3D",
+    "enabled": true,
+    "difficulty": "Normal",
+    "min_bet": 0,
+    "max_bet": 0,
+    "round_seconds": 30
+  },
+  {
+    "code": "xi-dach-3d",
+    "name": "Xì Dách 3D",
+    "enabled": true,
+    "difficulty": "Normal",
+    "min_bet": 0,
+    "max_bet": 0,
+    "round_seconds": 30
+  },
+  {
+    "code": "the-thao",
+    "name": "Thể Thao",
+    "enabled": true,
+    "difficulty": "Normal",
+    "min_bet": 0,
+    "max_bet": 0,
+    "round_seconds": 30
+  },
+  {
+    "code": "xo-so",
+    "name": "Xổ Số",
+    "enabled": true,
+    "difficulty": "Normal",
+    "min_bet": 0,
+    "max_bet": 0,
+    "round_seconds": 30
+  }
+]

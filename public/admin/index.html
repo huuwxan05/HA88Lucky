@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HA88Lucky V9.x — Admin Control Center</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#07090f;color:#e5e7eb;font-family:Inter,system-ui,sans-serif}
+header{padding:18px 22px;border-bottom:1px solid #24200f;background:#0c0d12;display:flex;justify-content:space-between;gap:15px;align-items:center}
+.brand{color:#f5c451;font-weight:900;font-size:20px}.badge{padding:5px 9px;border:1px solid #6b541d;border-radius:999px;color:#f5c451;font-size:11px}
+main{padding:20px;max-width:1200px;margin:auto}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}
+.card{background:linear-gradient(145deg,#11151f,#090b11);border:1px solid #293244;border-radius:16px;padding:18px}
+h2{font-size:15px;color:#f5c451;margin:0 0 14px}.muted{color:#94a3b8;font-size:12px}
+select,input,button{width:100%;padding:10px;border-radius:9px;border:1px solid #334155;background:#0b1020;color:#fff;margin-top:7px}
+button{background:#dcae3f;color:#17120a;border:0;font-weight:800;cursor:pointer}
+.warning{border-color:#7c5d1b}.danger{border-color:#7f1d1d}
+table{width:100%;border-collapse:collapse;font-size:12px}td,th{text-align:left;padding:9px;border-bottom:1px solid #202938}
+.ok{color:#4ade80}.audit{font-family:ui-monospace,monospace;font-size:11px;color:#94a3b8;line-height:1.6}
+</style>
+<link rel="stylesheet" href="/v9.css"></head>
+<body><div id="adminApiStatus" class="ha88-test-banner">Admin API: đang kiểm tra…</div>
+<header><div class="brand">👑 HA88Lucky V9.x Admin Control Center</div><div class="badge">SUPER ADMIN • TEST</div></header>
+<main>
+<div class="grid">
+<section class="card"><h2>🎮 Game Control</h2><div class="muted">Cấu hình áp dụng theo game, không gắn với tài khoản người chơi.</div>
+<label>Game</label><select id="game"><option>Tài Xỉu 3D</option><option>Sic Bo 3D</option><option>Rồng Hổ 3D</option><option>Quyết Chiến 3D</option><option>Tiến Lên 3D</option><option>Phỏm 3D</option><option>Xì Dách 3D</option></select>
+<label>Độ khó TEST</label><select id="difficulty"><option>Easy</option><option selected>Normal</option><option>Hard</option><option>Extreme</option></select>
+<button onclick="saveConfig()">LƯU CẤU HÌNH</button></section>
+
+<section class="card warning"><h2>🧪 TEST Round Result</h2><div class="muted">Điều chỉnh kết quả của một vòng TEST. Không có trường chọn username/player ID.</div>
+<label>Game</label><select id="roundGame"><option>Tài Xỉu 3D</option><option>Sic Bo 3D</option><option>Rồng Hổ 3D</option><option>Baccarat 3D</option><option>Quyết Chiến 3D</option></select>
+<label>Round ID</label><input id="roundId" placeholder="TEST-ROUND-001">
+<label>Kết quả TEST</label><input id="roundResult" placeholder="Ví dụ: TAI / PLAYER / JACKPOT">
+<button onclick="applyRound()">XÁC NHẬN TEST RESULT</button></section>
+
+<section class="card"><h2>🔐 Security Center</h2>
+<div class="muted">Server-authoritative security checklist</div>
+<p>✓ Secure session</p><p>✓ CSRF protection</p><p>✓ Rate limiting</p><p>✓ Prepared SQL</p><p>✓ Security headers</p><p>✓ Secrets in environment</p><p>✓ Admin audit logging</p></section>
+
+<section class="card"><h2>📋 Audit Log</h2><div class="audit" id="audit">[SYSTEM] Admin Control Center initialized<br>[SECURITY] TEST environment<br>[ACCESS] Player-targeted result controls: DISABLED</div></section>
+</div>
+</main>
+<script>
+const API='/api/index.php';
+const CSRF=()=>sessionStorage.getItem('admin_csrf')||'';
+const oldApi=api0;
+async function api(action,opts={}) {
+  opts.headers=Object.assign({'Content-Type':'application/json','X-CSRF-Token':CSRF()},opts.headers||{});
+  return oldApi(action,opts);
+};
+const auditEl=document.getElementById('audit');
+function audit(s){auditEl.innerHTML += '<br>['+new Date().toISOString()+'] '+s}
+async function api0(action, opts={}) {
+  const r=await fetch(API+'?action='+encodeURIComponent(action),opts);
+  const x=await r.json().catch(()=>({error:'invalid_json'}));
+  if(!r.ok) throw new Error(x.error||('HTTP '+r.status));
+  return x;
+}
+async function saveConfig(){
+  try{
+    const x=await api('admin_game_update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+      game_code:document.getElementById('game').value,
+      difficulty:document.getElementById('difficulty').value,
+      enabled:true,min_bet:0,max_bet:0,round_seconds:30,reason:'Admin Control Center'
+    })});
+    audit('GAME_CONFIG '+JSON.stringify(x)); alert('Đã lưu cấu hình game.');
+  }catch(e){alert('Lỗi: '+e.message)}
+}
+async function applyRound(){
+  const g=document.getElementById('roundGame').value,r=document.getElementById('roundId').value.trim(),v=document.getElementById('roundResult').value.trim();
+  if(!r||!v){alert('Nhập Round ID và kết quả TEST.');return}
+  try{
+    const x=await api('admin_round_result',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+      game_code:g,round_id:r,result_code:v,reason:'Admin Control Center TEST'
+    })});
+    audit('ROUND_OVERRIDE '+JSON.stringify(x)); alert('Đã ghi TEST result theo game/round.');
+  }catch(e){alert('Lỗi: '+e.message)}
+}
+async function loadOverview(){
+  try{
+    const [o,a,g]=await Promise.all([api('admin_overview'),api('admin_audit&limit=20'),api('admin_games')]);
+    audit('OVERVIEW '+JSON.stringify(o.overview));
+    audit('GAMES '+JSON.stringify(g.games));
+    if(a.audit) a.audit.slice(0,10).forEach(x=>audit(x.action+' / '+x.scope+' / '+(x.target_id||'')));
+  }catch(e){audit('API ERROR '+e.message)}
+}
+loadOverview();
+</script><section style="max-width:900px;margin:30px auto;padding:20px">
+<h2>Admin Accounts</h2>
+<button onclick="loadAdmins()">Tải danh sách Admin</button>
+<pre id="admins"></pre>
+</section>
+<script>
+async function loadAdmins(){try{const x=await api('admin_list_accounts');admins.textContent=JSON.stringify(x.admins,null,2)}catch(e){admins.textContent=e.message}}
+</script>
+<section style="max-width:900px;margin:30px auto;padding:20px">
+<h2>V9 Game Engine — 13 Games</h2>
+<button onclick="loadGameRegistry()">Đồng bộ danh sách game</button>
+<pre id="gameRegistry"></pre>
+</section>
+<script>
+async function loadGameRegistry(){
+  try {
+    const x=await api('game_list');
+    gameRegistry.textContent=JSON.stringify(x.games,null,2);
+  } catch(e) { gameRegistry.textContent=e.message; }
+}
+</script>
+<section style="max-width:900px;margin:30px auto;padding:20px"><h2>Game Engine</h2><div id="gameLinks" style="display:grid;gap:8px"></div></section>
+<script>
+async function openGame(code){window.open('/games/'+code+'.html','_blank')}
+async function loadGameLinks(){
+ try{const x=await api('game_list');gameLinks.innerHTML=x.games.map(g=>'<button onclick="openGame(\''+g.code+'\')">'+g.name+' — '+g.difficulty+' — '+(g.enabled?'ON':'OFF')+'</button>').join('')}
+ catch(e){gameLinks.textContent=e.message}
+}
+loadGameLinks();
+</script>
+<script>
+(async()=>{try{const x=await api('health');adminApiStatus.textContent='Admin API: ONLINE · '+x.version+' · '+x.mode}catch(e){adminApiStatus.textContent='Admin API: ERROR'}})();
+</script></body></html>

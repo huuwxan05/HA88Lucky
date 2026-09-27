@@ -1,0 +1,6 @@
+.env
+.env.*
+*.log
+security.env
+vendor/
+node_modules/

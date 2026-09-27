@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: ha88lucky-test
+    runtime: docker
+    healthCheckPath: /api/index.php?action=health
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_ADMIN_TOTP_KEY
+        sync: false
+      - key: DATABASE_URL
+        sync: false
+      - key: ADMIN_BOOTSTRAP_USERNAME
+        sync: false
+      - key: ADMIN_BOOTSTRAP_PASSWORD
+        sync: false
+      - key: ADMIN_BOOTSTRAP_TOTP_SECRET
+        sync: false

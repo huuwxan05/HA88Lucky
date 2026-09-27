@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HA88Lucky — Admin Login</title>
+<style>
+*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:#07090f;color:#fff;font-family:Inter,system-ui,sans-serif}
+.card{width:min(420px,92vw);padding:30px;border:1px solid #3b3020;border-radius:20px;background:linear-gradient(145deg,#15130e,#090b12);box-shadow:0 25px 80px #000}
+h1{color:#f5c451;margin:0 0 8px}.muted{color:#94a3b8;font-size:13px;margin-bottom:22px}
+label{display:block;margin:14px 0 7px;color:#cbd5e1;font-size:13px}input{width:100%;padding:13px;border-radius:10px;border:1px solid #334155;background:#0b1020;color:#fff}
+button{width:100%;margin-top:18px;padding:13px;border:0;border-radius:10px;background:#dcae3f;color:#17120a;font-weight:800}
+.note{margin-top:16px;color:#64748b;font-size:11px;line-height:1.5}
+</style>
+</head>
+<body>
+<form class="card" id="login">
+<h1>👑 HA88Lucky Admin</h1>
+<div class="muted">Khu vực quản trị riêng — không dùng tài khoản người chơi.</div>
+<label>Tài khoản Admin</label><input name="username" autocomplete="username" required>
+<label>Mật khẩu</label><input name="password" type="password" autocomplete="current-password" required>
+<label>Mã 2FA</label><input name="otp" inputmode="numeric" autocomplete="one-time-code" required>
+<button>ĐĂNG NHẬP QUẢN TRỊ</button>
+<div class="note">Demo UI V9.x. Xác thực thật phải thực hiện phía server; không lưu mật khẩu hoặc secret trong frontend.</div>
+</form>
+<script>
+document.getElementById('login').addEventListener('submit',async e=>{e.preventDefault();const f=new FormData(e.currentTarget);const body={username:f.get('username'),password:f.get('password'),otp:f.get('otp')};try{const r=await fetch('/api/index.php?action=admin_login',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'same-origin',body:JSON.stringify(body)});const x=await r.json();if(!r.ok)throw new Error(x.error||'login_failed');sessionStorage.setItem('admin_csrf',x.csrf);location.href='/admin/index.html';}catch(err){alert('Đăng nhập thất bại: '+err.message)}});
+</script>
+<script>
+const API='/api/index.php';
+document.querySelector('form')?.addEventListener('submit',async e=>{e.preventDefault();
+const f=new FormData(e.currentTarget); const body={username:f.get('username')||document.querySelector('#username')?.value,password:f.get('password')||document.querySelector('#password')?.value,otp:f.get('otp')||document.querySelector('#otp')?.value};
+const r=await fetch(API+'?action=admin_login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});const x=await r.json();if(r.ok){sessionStorage.setItem('admin_csrf',x.csrf);location.href='/admin/index.html'}else alert('Đăng nhập thất bại');});
+</script></body></html>
