@@ -25,10 +25,11 @@ function settle_round(string $game,string $rid):array{
  $u=$pdo->prepare("UPDATE game_rounds SET status='settled',result_code=?,settled_at=now() WHERE id=? RETURNING *");$u->execute([$result,$r['id']]);$out=$u->fetch();$pdo->commit();return $out;}catch(Throwable $e){$pdo->rollBack();throw $e;}}
 
 try{
+  if($action==='health'){json_out(['ok'=>true,'service'=>'HA88Lucky','mode'=>'TEST','time'=>gmdate('c')]);}
+
  ensure_auth_tables();
  if (payment_routes(db(), admin_session(), player_session(), $action, $_SERVER['REQUEST_METHOD'] ?? 'GET')) { exit; }
 
- if($action==='health'){json_out(['ok'=>true,'service'=>'HA88Lucky','mode'=>'TEST','time'=>gmdate('c')]);}
  if($action==='admin_csrf'){start_session('__Host-ha88_admin');json_out(['ok'=>true,'csrf'=>csrf_token()]);}
  if($action==='player_csrf'){require_player();json_out(['ok'=>true,'csrf'=>csrf_token()]);}
  if($action==='admin_login'){
